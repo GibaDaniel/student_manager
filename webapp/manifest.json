@@ -1,0 +1,314 @@
+{
+  "_version": "1.83.1",
+  "sap.app": {
+    "id": "zcfstudentapp1",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.25.0",
+      "toolsId": "f12ba185-8533-400c-a8df-ae9b12000302"
+    },
+    "dataSources": {
+      "annotation": {
+        "type": "ODataAnnotation",
+        "uri": "annotations/annotation.xml",
+        "settings": {
+          "localUri": "annotations/annotation.xml"
+        }
+      },
+      "mainService": {
+        "uri": "/sap/opu/odata4/sap/zcf_ui_student_o4/srvd/sap/zcf_ui_student/0001/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "annotation"
+          ],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "ZCFStudent-manage": {
+          "semanticObject": "ZCFStudent",
+          "action": "manage",
+          "title": "{{ZCFStudent-manage.flpTitle}}",
+          "subTitle": "{{ZCFStudent-manage.flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.145.2",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "zcfstudentapp.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "StudentList",
+          "target": "StudentList"
+        },
+        {
+          "pattern": "Student({key}):?query:",
+          "name": "StudentObjectPage",
+          "target": "StudentObjectPage"
+        },
+        {
+          "name": "Student__EnrollmentObjectPage",
+          "pattern": "Student({key})/_Enrollment({_EnrollmentKey}):?query:",
+          "target": "Student__EnrollmentObjectPage"
+        },
+        {
+          "name": "Student__Enrollment__AttendanceObjectPage",
+          "pattern": "Student({key})/_Enrollment({_EnrollmentKey})/_Attendance({_AttendanceKey}):?query:",
+          "target": "Student__Enrollment__AttendanceObjectPage"
+        },
+        {
+          "name": "Student__Enrollment__CourseAttendanceObjectPage",
+          "pattern": "Student({key})/_Enrollment({_EnrollmentKey})/_CourseAttendance({_CourseAttendanceKey}):?query:",
+          "target": "Student__Enrollment__CourseAttendanceObjectPage"
+        },
+        {
+          "name": "Student__Enrollment__GradeObjectPage",
+          "pattern": "Student({key})/_Enrollment({_EnrollmentKey})/_Grade({_GradeKey}):?query:",
+          "target": "Student__Enrollment__GradeObjectPage"
+        },
+        {
+          "name": "Student__Enrollment__LabAttendanceObjectPage",
+          "pattern": "Student({key})/_Enrollment({_EnrollmentKey})/_LabAttendance({_LabAttendanceKey}):?query:",
+          "target": "Student__Enrollment__LabAttendanceObjectPage"
+        },
+        {
+          "name": "Student__Enrollment__SemAttendanceObjectPage",
+          "pattern": "Student({key})/_Enrollment({_EnrollmentKey})/_SemAttendance({_SemAttendanceKey}):?query:",
+          "target": "Student__Enrollment__SemAttendanceObjectPage"
+        }
+      ],
+      "targets": {
+        "StudentList": {
+          "type": "Component",
+          "id": "StudentList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/Student",
+              "variantManagement": "Page",
+              "navigation": {
+                "Student": {
+                  "detail": {
+                    "route": "StudentObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable",
+                    "widthIncludingColumnHeader": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "StudentObjectPage": {
+          "type": "Component",
+          "id": "StudentObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Student",
+              "controlConfiguration": {
+                "_Enrollment/@com.sap.vocabularies.UI.v1.LineItem#ForStudentPage": {
+                  "tableSettings": {
+                    "widthIncludingColumnHeader": true
+                  }
+                }
+              },
+              "navigation": {
+                "_Enrollment": {
+                  "detail": {
+                    "route": "Student__EnrollmentObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Student__EnrollmentObjectPage": {
+          "type": "Component",
+          "id": "Student__EnrollmentObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {
+                "_Attendance": {
+                  "detail": {
+                    "route": "Student__Enrollment__AttendanceObjectPage"
+                  }
+                },
+                "_CourseAttendance": {
+                  "detail": {
+                    "route": "Student__Enrollment__CourseAttendanceObjectPage"
+                  }
+                },
+                "_Grade": {
+                  "detail": {
+                    "route": "Student__Enrollment__GradeObjectPage"
+                  }
+                },
+                "_LabAttendance": {
+                  "detail": {
+                    "route": "Student__Enrollment__LabAttendanceObjectPage"
+                  }
+                },
+                "_SemAttendance": {
+                  "detail": {
+                    "route": "Student__Enrollment__SemAttendanceObjectPage"
+                  }
+                }
+              },
+              "contextPath": "/Student/_Enrollment",
+              "controlConfiguration": {
+                "_Grade/@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "widthIncludingColumnHeader": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Student__Enrollment__AttendanceObjectPage": {
+          "type": "Component",
+          "id": "Student__Enrollment__AttendanceObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/Student/_Enrollment/_Attendance"
+            }
+          }
+        },
+        "Student__Enrollment__CourseAttendanceObjectPage": {
+          "type": "Component",
+          "id": "Student__Enrollment__CourseAttendanceObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/Student/_Enrollment/_CourseAttendance"
+            }
+          }
+        },
+        "Student__Enrollment__GradeObjectPage": {
+          "type": "Component",
+          "id": "Student__Enrollment__GradeObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/Student/_Enrollment/_Grade"
+            }
+          }
+        },
+        "Student__Enrollment__LabAttendanceObjectPage": {
+          "type": "Component",
+          "id": "Student__Enrollment__LabAttendanceObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/Student/_Enrollment/_LabAttendance"
+            }
+          }
+        },
+        "Student__Enrollment__SemAttendanceObjectPage": {
+          "type": "Component",
+          "id": "Student__Enrollment__SemAttendanceObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/Student/_Enrollment/_SemAttendance"
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.fe": {
+    "app": {
+      "enableLazyLoading": true
+    }
+  }
+}
