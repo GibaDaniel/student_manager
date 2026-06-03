@@ -146,6 +146,11 @@
           "name": "Student__Enrollment__SemAttendanceObjectPage",
           "pattern": "Student({key})/_Enrollment({_EnrollmentKey})/_SemAttendance({_SemAttendanceKey}):?query:",
           "target": "Student__Enrollment__SemAttendanceObjectPage"
+        },
+        {
+          "name": "Student__Enrollment__HomeworkObjectPage",
+          "pattern": "Student({key})/_Enrollment({_EnrollmentKey})/_Homework({_HomeworkKey}):?query:",
+          "target": "Student__Enrollment__HomeworkObjectPage"
         }
       ],
       "targets": {
@@ -231,11 +236,21 @@
                   "detail": {
                     "route": "Student__Enrollment__SemAttendanceObjectPage"
                   }
+                },
+                "_Homework": {
+                  "detail": {
+                    "route": "Student__Enrollment__HomeworkObjectPage"
+                  }
                 }
               },
               "contextPath": "/Student/_Enrollment",
               "controlConfiguration": {
                 "_Grade/@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "widthIncludingColumnHeader": true
+                  }
+                },
+                "_Homework/@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
                     "widthIncludingColumnHeader": true
                   }
@@ -296,6 +311,17 @@
             "settings": {
               "navigation": {},
               "contextPath": "/Student/_Enrollment/_SemAttendance"
+            }
+          }
+        },
+        "Student__Enrollment__HomeworkObjectPage": {
+          "type": "Component",
+          "id": "Student__Enrollment__HomeworkObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/Student/_Enrollment/_Homework"
             }
           }
         }

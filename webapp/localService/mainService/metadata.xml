@@ -108,6 +108,7 @@
                 <NavigationProperty Name="_Grade" Type="Collection(com.sap.gateway.srvd.zcf_ui_student.v0001.GradeType)" Partner="_Enrollment">
                     <OnDelete Action="Cascade"/>
                 </NavigationProperty>
+                <NavigationProperty Name="_Homework" Type="Collection(com.sap.gateway.srvd.zcf_ui_student.v0001.HomeworkType)"/>
                 <NavigationProperty Name="_LabAttendance" Type="Collection(com.sap.gateway.srvd.zcf_ui_student.v0001.LabAttendanceType)"/>
                 <NavigationProperty Name="_Professor" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.ProfessorType" Nullable="false">
                     <ReferentialConstraint Property="ProfessorId" ReferencedProperty="ProfessorId"/>
@@ -153,6 +154,9 @@
                 <Property Name="LastChangedAt" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="LocalLastChangedAt" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="ProfessorId" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="TotalStudents" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="PassedStudents" Type="Edm.Byte" Nullable="false"/>
+                <Property Name="TotalStudentEnrolled" Type="Edm.Int32" Nullable="false"/>
                 <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false"/>
                 <Property Name="DraftEntityCreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="DraftEntityLastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
@@ -297,10 +301,45 @@
                 <Property Name="SAP__Messages" Type="Collection(com.sap.gateway.srvd.zcf_ui_student.v0001.SAP__Message)" Nullable="false"/>
                 <NavigationProperty Name="DraftAdministrativeData" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.I_DraftAdministrativeDataType"/>
                 <NavigationProperty Name="SiblingEntity" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.GradeType"/>
+                <NavigationProperty Name="_CourseOffering" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.CourseOfferingType"/>
                 <NavigationProperty Name="_Enrollment" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.EnrollmentType" Nullable="false" Partner="_Grade">
                     <ReferentialConstraint Property="EnrollmentId" ReferencedProperty="EnrollmentId"/>
                 </NavigationProperty>
                 <NavigationProperty Name="_Exam" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.ExamType"/>
+                <NavigationProperty Name="_Professor" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.ProfessorType" Nullable="false">
+                    <ReferentialConstraint Property="ProfessorId" ReferencedProperty="ProfessorId"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="HomeworkType">
+                <Key>
+                    <PropertyRef Name="HomeworkId"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="HomeworkId" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="OfferingId" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="ProfessorId" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="StudentId" Type="Edm.Guid"/>
+                <Property Name="Title" Type="Edm.String" Nullable="false" MaxLength="100"/>
+                <Property Name="Description" Type="Edm.String" Nullable="false"/>
+                <Property Name="DueDate" Type="Edm.Date"/>
+                <Property Name="FileName" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="MimeType" Type="Edm.String" Nullable="false" MaxLength="128"/>
+                <Property Name="Attachment" Type="Edm.Stream"/>
+                <Property Name="Score" Type="Edm.Byte" Nullable="false"/>
+                <Property Name="Feedback" Type="Edm.String" Nullable="false"/>
+                <Property Name="LocalLastChangedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="DraftEntityCreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="DraftEntityLastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="__EntityControl" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.EntityControl"/>
+                <Property Name="SAP__Messages" Type="Collection(com.sap.gateway.srvd.zcf_ui_student.v0001.SAP__Message)" Nullable="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.I_DraftAdministrativeDataType"/>
+                <NavigationProperty Name="SiblingEntity" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.HomeworkType"/>
+                <NavigationProperty Name="_CourseOffering" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.CourseOfferingType" Nullable="false" Partner="_Homework">
+                    <ReferentialConstraint Property="OfferingId" ReferencedProperty="OfferingId"/>
+                </NavigationProperty>
                 <NavigationProperty Name="_Professor" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.ProfessorType" Nullable="false">
                     <ReferentialConstraint Property="ProfessorId" ReferencedProperty="ProfessorId"/>
                 </NavigationProperty>
@@ -364,6 +403,7 @@
                 <Property Name="ExamType" Type="Edm.String" Nullable="false" MaxLength="20"/>
                 <Property Name="TotalStudents" Type="Edm.Int32" Nullable="false"/>
                 <Property Name="PassedStudents" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="PassRate" Type="Edm.Decimal" Nullable="false" Precision="10"/>
                 <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false"/>
                 <Property Name="DraftEntityCreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="DraftEntityLastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
@@ -375,6 +415,9 @@
                 <Property Name="SAP__Messages" Type="Collection(com.sap.gateway.srvd.zcf_ui_student.v0001.SAP__Message)" Nullable="false"/>
                 <NavigationProperty Name="DraftAdministrativeData" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.I_DraftAdministrativeDataType"/>
                 <NavigationProperty Name="SiblingEntity" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.CourseOfferingType"/>
+                <NavigationProperty Name="_AttendByDateCourse" Type="Collection(com.sap.gateway.srvd.zcf_ui_student.v0001.AttendByDateType)"/>
+                <NavigationProperty Name="_AttendByDateLab" Type="Collection(com.sap.gateway.srvd.zcf_ui_student.v0001.AttendByDateType)"/>
+                <NavigationProperty Name="_AttendByDateSeminary" Type="Collection(com.sap.gateway.srvd.zcf_ui_student.v0001.AttendByDateType)"/>
                 <NavigationProperty Name="_Classroom" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.ClasroomType">
                     <ReferentialConstraint Property="ClassroomId" ReferencedProperty="ClassroomId"/>
                 </NavigationProperty>
@@ -385,6 +428,9 @@
                     <OnDelete Action="Cascade"/>
                 </NavigationProperty>
                 <NavigationProperty Name="_Exam" Type="Collection(com.sap.gateway.srvd.zcf_ui_student.v0001.ExamType)" Partner="_CourseOffering">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="_Homework" Type="Collection(com.sap.gateway.srvd.zcf_ui_student.v0001.HomeworkType)" Partner="_CourseOffering">
                     <OnDelete Action="Cascade"/>
                 </NavigationProperty>
                 <NavigationProperty Name="_Professor" Type="com.sap.gateway.srvd.zcf_ui_student.v0001.ProfessorType" Nullable="false" Partner="_CrsOffr">
@@ -411,6 +457,9 @@
                 <Property Name="LastChangedAt" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="LocalLastChangedAt" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="FullName" Type="Edm.String" Nullable="false" MaxLength="61"/>
+                <Property Name="FileName" Type="Edm.String" Nullable="false" MaxLength="128"/>
+                <Property Name="MimeType" Type="Edm.String" Nullable="false" MaxLength="128"/>
+                <Property Name="Photo" Type="Edm.Stream"/>
                 <Property Name="HideNewEnroll" Type="Edm.Boolean" Nullable="false"/>
                 <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false"/>
                 <Property Name="DraftEntityCreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
@@ -495,6 +544,7 @@
                 <Property Name="LastChangedAt" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="LocalLastChangedAt" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="ProfessorId" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="OfferingId" Type="Edm.Guid"/>
                 <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false"/>
                 <Property Name="DraftEntityCreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="DraftEntityLastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
@@ -552,9 +602,9 @@
                 <Property Name="LastChangedAt" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="LocalLastChangedAt" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="FullName" Type="Edm.String" Nullable="false" MaxLength="61"/>
-                <Property Name="ProfilePic" Type="Edm.Stream"/>
+                <Property Name="FileName" Type="Edm.String" Nullable="false" MaxLength="128"/>
                 <Property Name="MimeType" Type="Edm.String" Nullable="false" MaxLength="128"/>
-                <Property Name="FileName" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="Photo" Type="Edm.Stream"/>
                 <Property Name="HideNewCrsOffr" Type="Edm.Boolean" Nullable="false"/>
                 <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false"/>
                 <Property Name="DraftEntityCreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
@@ -580,6 +630,18 @@
                 <Property Name="DomainName" Type="Edm.String" Nullable="false" MaxLength="30"/>
                 <Property Name="Status" Type="Edm.String" Nullable="false" MaxLength="1"/>
                 <Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="20"/>
+            </EntityType>
+            <EntityType Name="AttendByDateType">
+                <Key>
+                    <PropertyRef Name="OfferingId"/>
+                    <PropertyRef Name="ClassDate"/>
+                    <PropertyRef Name="Type"/>
+                </Key>
+                <Property Name="OfferingId" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="ClassDate" Type="Edm.Date" Nullable="false"/>
+                <Property Name="Type" Type="Edm.String" Nullable="false" MaxLength="9"/>
+                <Property Name="TotalStudents" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="TotalPresent" Type="Edm.Byte" Nullable="false"/>
             </EntityType>
             <EntityType Name="DepartmentType">
                 <Key>
@@ -613,6 +675,7 @@
             <ComplexType Name="CourseOfferingCbAControl">
                 <Property Name="_Enrollment" Type="Edm.Boolean" Nullable="false"/>
                 <Property Name="_Exam" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="_Homework" Type="Edm.Boolean" Nullable="false"/>
                 <Property Name="_Schedule" Type="Edm.Boolean" Nullable="false"/>
             </ComplexType>
             <ComplexType Name="ProfessorCbAControl">
@@ -915,6 +978,7 @@
                     <NavigationPropertyBinding Path="_Enrollment" Target="Enrollment"/>
                     <NavigationPropertyBinding Path="_Professor" Target="Professor"/>
                 </EntitySet>
+                <EntitySet Name="AttendByDate" EntityType="com.sap.gateway.srvd.zcf_ui_student.v0001.AttendByDateType"/>
                 <EntitySet Name="Clasroom" EntityType="com.sap.gateway.srvd.zcf_ui_student.v0001.ClasroomType">
                     <NavigationPropertyBinding Path="DraftAdministrativeData" Target="I_DraftAdministrativeData"/>
                     <NavigationPropertyBinding Path="SiblingEntity" Target="Clasroom"/>
@@ -930,10 +994,14 @@
                 <EntitySet Name="CourseOffering" EntityType="com.sap.gateway.srvd.zcf_ui_student.v0001.CourseOfferingType">
                     <NavigationPropertyBinding Path="DraftAdministrativeData" Target="I_DraftAdministrativeData"/>
                     <NavigationPropertyBinding Path="SiblingEntity" Target="CourseOffering"/>
+                    <NavigationPropertyBinding Path="_AttendByDateCourse" Target="AttendByDate"/>
+                    <NavigationPropertyBinding Path="_AttendByDateLab" Target="AttendByDate"/>
+                    <NavigationPropertyBinding Path="_AttendByDateSeminary" Target="AttendByDate"/>
                     <NavigationPropertyBinding Path="_Classroom" Target="Clasroom"/>
                     <NavigationPropertyBinding Path="_Course" Target="Course"/>
                     <NavigationPropertyBinding Path="_Enrollment" Target="Enrollment"/>
                     <NavigationPropertyBinding Path="_Exam" Target="Exam"/>
+                    <NavigationPropertyBinding Path="_Homework" Target="Homework"/>
                     <NavigationPropertyBinding Path="_Professor" Target="Professor"/>
                     <NavigationPropertyBinding Path="_Schedule" Target="Schedule"/>
                 </EntitySet>
@@ -949,6 +1017,7 @@
                     <NavigationPropertyBinding Path="_CourseAttendance" Target="CourseAttendance"/>
                     <NavigationPropertyBinding Path="_CourseOffering" Target="CourseOffering"/>
                     <NavigationPropertyBinding Path="_Grade" Target="Grade"/>
+                    <NavigationPropertyBinding Path="_Homework" Target="Homework"/>
                     <NavigationPropertyBinding Path="_LabAttendance" Target="LabAttendance"/>
                     <NavigationPropertyBinding Path="_Professor" Target="Professor"/>
                     <NavigationPropertyBinding Path="_SemAttendance" Target="SeminaryAttendance"/>
@@ -962,8 +1031,15 @@
                 <EntitySet Name="Grade" EntityType="com.sap.gateway.srvd.zcf_ui_student.v0001.GradeType">
                     <NavigationPropertyBinding Path="DraftAdministrativeData" Target="I_DraftAdministrativeData"/>
                     <NavigationPropertyBinding Path="SiblingEntity" Target="Grade"/>
+                    <NavigationPropertyBinding Path="_CourseOffering" Target="CourseOffering"/>
                     <NavigationPropertyBinding Path="_Enrollment" Target="Enrollment"/>
                     <NavigationPropertyBinding Path="_Exam" Target="Exam"/>
+                    <NavigationPropertyBinding Path="_Professor" Target="Professor"/>
+                </EntitySet>
+                <EntitySet Name="Homework" EntityType="com.sap.gateway.srvd.zcf_ui_student.v0001.HomeworkType">
+                    <NavigationPropertyBinding Path="DraftAdministrativeData" Target="I_DraftAdministrativeData"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Homework"/>
+                    <NavigationPropertyBinding Path="_CourseOffering" Target="CourseOffering"/>
                     <NavigationPropertyBinding Path="_Professor" Target="Professor"/>
                 </EntitySet>
                 <EntitySet Name="I_DraftAdministrativeData" EntityType="com.sap.gateway.srvd.zcf_ui_student.v0001.I_DraftAdministrativeDataType"/>
@@ -1209,6 +1285,19 @@
                                     </PropertyValue>
                                 </Record>
                                 <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_Homework"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Insertable" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                    <PropertyValue Property="DeepUpdateSupport">
+                                        <Record>
+                                            <PropertyValue Property="Supported" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                                <Record>
                                     <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_LabAttendance"/>
                                     <PropertyValue Property="InsertRestrictions">
                                         <Record>
@@ -1318,6 +1407,7 @@
                                 <PropertyPath>_CourseAttendance</PropertyPath>
                                 <PropertyPath>_CourseOffering</PropertyPath>
                                 <PropertyPath>_Grade</PropertyPath>
+                                <PropertyPath>_Homework</PropertyPath>
                                 <PropertyPath>_LabAttendance</PropertyPath>
                                 <PropertyPath>_Professor</PropertyPath>
                                 <PropertyPath>_SemAttendance</PropertyPath>
@@ -1390,7 +1480,7 @@
                 <Annotation Term="SAP__UI.DataPoint" Qualifier="CoursePresentCount">
                     <Record>
                         <PropertyValue Property="Value" Path="CoursePresentCount"/>
-                        <PropertyValue Property="Title" String="Prezențe Curs"/>
+                        <PropertyValue Property="Title" String="Course Attendance"/>
                         <PropertyValue Property="TargetValue" Path="CourseTotalWeeks"/>
                         <PropertyValue Property="Visualization" EnumMember="SAP__UI.VisualizationType/Progress"/>
                         <PropertyValue Property="CriticalityCalculation">
@@ -1405,7 +1495,7 @@
                 <Annotation Term="SAP__UI.DataPoint" Qualifier="LabPresentCount">
                     <Record>
                         <PropertyValue Property="Value" Path="LabPresentCount"/>
-                        <PropertyValue Property="Title" String="Prezențe Laborator"/>
+                        <PropertyValue Property="Title" String="Laboratory Attendance"/>
                         <PropertyValue Property="TargetValue" Path="LabTotalWeeks"/>
                         <PropertyValue Property="Visualization" EnumMember="SAP__UI.VisualizationType/Progress"/>
                         <PropertyValue Property="CriticalityCalculation">
@@ -1420,7 +1510,7 @@
                 <Annotation Term="SAP__UI.DataPoint" Qualifier="SemPresentCount">
                     <Record>
                         <PropertyValue Property="Value" Path="SemPresentCount"/>
-                        <PropertyValue Property="Title" String="Prezențe Seminar"/>
+                        <PropertyValue Property="Title" String="Seminary Attendance"/>
                         <PropertyValue Property="TargetValue" Path="SemTotalWeeks"/>
                         <PropertyValue Property="Visualization" EnumMember="SAP__UI.VisualizationType/Progress"/>
                         <PropertyValue Property="CriticalityCalculation">
@@ -1503,6 +1593,11 @@
                             </PropertyValue>
                         </Record>
                         <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Homeworks"/>
+                            <PropertyValue Property="ID" String="HomeworkFacet"/>
+                            <PropertyValue Property="Target" AnnotationPath="_Homework/@SAP__UI.LineItem"/>
+                        </Record>
+                        <Record Type="SAP__UI.ReferenceFacet">
                             <PropertyValue Property="Label" String="Time Slots"/>
                             <PropertyValue Property="ID" String="Schedule"/>
                             <PropertyValue Property="Target" AnnotationPath="_CourseOffering/_Schedule/@SAP__UI.LineItem"/>
@@ -1580,7 +1675,7 @@
                             <PropertyValue Property="Value" Path="StudentLastName"/>
                         </Record>
                         <Record Type="SAP__UI.DataField">
-                            <PropertyValue Property="Label" String="StudentFirstName"/>
+                            <PropertyValue Property="Label" String="Student First Name"/>
                             <PropertyValue Property="Value" Path="StudentFirstName"/>
                         </Record>
                         <Record Type="SAP__UI.DataField">
@@ -1626,7 +1721,7 @@
                 <Annotation Term="SAP__UI.LineItem" Qualifier="ForCoursePage">
                     <Collection>
                         <Record Type="SAP__UI.DataField">
-                            <PropertyValue Property="Label" String="StudentLastName"/>
+                            <PropertyValue Property="Label" String="Student Last Name"/>
                             <PropertyValue Property="Value" Path="StudentLastName"/>
                         </Record>
                         <Record Type="SAP__UI.DataField">
@@ -2086,11 +2181,71 @@
             </Annotations>
             <Annotations Target="SAP__self.ExamType">
                 <Annotation Term="SAP__common.Label" String="Consumption View for ZI_CF_EXAM"/>
+                <Annotation Term="SAP__UI.Chart" Qualifier="ExamPassChart">
+                    <Record Type="SAP__UI.ChartDefinitionType">
+                        <PropertyValue Property="Title" String="Exam Results"/>
+                        <PropertyValue Property="ChartType" EnumMember="SAP__UI.ChartType/Bullet"/>
+                        <PropertyValue Property="Measures">
+                            <Collection>
+                                <PropertyPath>PassedStudents</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="MeasureAttributes">
+                            <Collection>
+                                <Record Type="SAP__UI.ChartMeasureAttributeType">
+                                    <PropertyValue Property="Measure" PropertyPath="PassedStudents"/>
+                                    <PropertyValue Property="Role" EnumMember="SAP__UI.ChartMeasureRoleType/Axis1"/>
+                                    <PropertyValue Property="DataPoint" AnnotationPath="@SAP__UI.DataPoint#PassedStudents"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.DataPoint" Qualifier="PassedStudents">
+                    <Record>
+                        <PropertyValue Property="Value" Path="PassedStudents"/>
+                        <PropertyValue Property="Title" String=""/>
+                        <PropertyValue Property="TargetValue" Path="TotalStudents"/>
+                        <PropertyValue Property="MinimumValue" Decimal="0"/>
+                        <PropertyValue Property="MaximumValue" Decimal="0"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.HeaderFacets">
+                    <Collection>
+                        <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="ExamPassChart"/>
+                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.Chart#ExamPassChart"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
                 <Annotation Term="SAP__UI.Facets">
                     <Collection>
                         <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Exam Details"/>
+                            <PropertyValue Property="ID" String="Exam">
+                                <Annotation Term="SAP__core.Messages">
+                                    <Collection>
+                                        <Record>
+                                            <PropertyValue Property="message" String="Facet id Exam is duplicated"/>
+                                            <PropertyValue Property="severity" String="error"/>
+                                        </Record>
+                                    </Collection>
+                                </Annotation>
+                            </PropertyValue>
+                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.Identification"/>
+                        </Record>
+                        <Record Type="SAP__UI.ReferenceFacet">
                             <PropertyValue Property="Label" String="Course Offering"/>
-                            <PropertyValue Property="ID" String="Exam"/>
+                            <PropertyValue Property="ID" String="Exam">
+                                <Annotation Term="SAP__core.Messages">
+                                    <Collection>
+                                        <Record>
+                                            <PropertyValue Property="message" String="Facet id Exam is duplicated"/>
+                                            <PropertyValue Property="severity" String="error"/>
+                                        </Record>
+                                    </Collection>
+                                </Annotation>
+                            </PropertyValue>
                             <PropertyValue Property="Target" AnnotationPath="@SAP__UI.Identification"/>
                         </Record>
                     </Collection>
@@ -2140,6 +2295,11 @@
                         <Record Type="SAP__UI.DataField">
                             <PropertyValue Property="Label" String="Exam Date"/>
                             <PropertyValue Property="Value" Path="ExamDate"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataFieldForAnnotation">
+                            <PropertyValue Property="Label" String="Results"/>
+                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.Chart#ExamPassChart"/>
+                            <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/High"/>
                         </Record>
                     </Collection>
                 </Annotation>
@@ -2608,9 +2768,27 @@
             </Annotations>
             <Annotations Target="SAP__self.setPresent(SAP__self.SeminaryAttendanceType)">
                 <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/setPresent"/>
+                <Annotation Term="SAP__common.SideEffects" Qualifier="SAP__Action_setPresent">
+                    <Record Type="SAP__common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath/>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
             </Annotations>
             <Annotations Target="SAP__self.setNeutral(SAP__self.SeminaryAttendanceType)">
                 <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/setNeutral"/>
+                <Annotation Term="SAP__common.SideEffects" Qualifier="SAP__Action_setNeutral">
+                    <Record Type="SAP__common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath/>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
             </Annotations>
             <Annotations Target="SAP__self.Edit(SAP__self.SeminaryAttendanceType)/PreserveChanges">
                 <Annotation Term="SAP__common.IsUpperCase"/>
@@ -2622,6 +2800,15 @@
             </Annotations>
             <Annotations Target="SAP__self.setAbsent(SAP__self.SeminaryAttendanceType)">
                 <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/setAbsent"/>
+                <Annotation Term="SAP__common.SideEffects" Qualifier="SAP__Action_setAbsent">
+                    <Record Type="SAP__common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath/>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
             </Annotations>
             <Annotations Target="SAP__self.SeminaryAttendanceType">
                 <Annotation Term="SAP__common.Label" String="Consumption View for ZI_CF_ATTEND_SEM"/>
@@ -2862,12 +3049,39 @@
             </Annotations>
             <Annotations Target="SAP__self.setAbsent(SAP__self.CourseAttendanceType)">
                 <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/setAbsent"/>
+                <Annotation Term="SAP__common.SideEffects" Qualifier="SAP__Action_setAbsent">
+                    <Record Type="SAP__common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath/>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
             </Annotations>
             <Annotations Target="SAP__self.setNeutral(SAP__self.CourseAttendanceType)">
                 <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/setNeutral"/>
+                <Annotation Term="SAP__common.SideEffects" Qualifier="SAP__Action_setNeutral">
+                    <Record Type="SAP__common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath/>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
             </Annotations>
             <Annotations Target="SAP__self.setPresent(SAP__self.CourseAttendanceType)">
                 <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/setPresent"/>
+                <Annotation Term="SAP__common.SideEffects" Qualifier="SAP__Action_setPresent">
+                    <Record Type="SAP__common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath/>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
             </Annotations>
             <Annotations Target="SAP__self.CourseAttendanceType">
                 <Annotation Term="SAP__common.Label" String="Consumption View for ZI_CF_ATTEND_COURSE"/>
@@ -3123,6 +3337,19 @@
                                     </PropertyValue>
                                 </Record>
                                 <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_CourseOffering"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Insertable" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                    <PropertyValue Property="DeepUpdateSupport">
+                                        <Record>
+                                            <PropertyValue Property="Supported" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                                <Record>
                                     <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_Enrollment"/>
                                     <PropertyValue Property="InsertRestrictions">
                                         <Record>
@@ -3221,6 +3448,7 @@
                             <Collection>
                                 <PropertyPath>DraftAdministrativeData</PropertyPath>
                                 <PropertyPath>SiblingEntity</PropertyPath>
+                                <PropertyPath>_CourseOffering</PropertyPath>
                                 <PropertyPath>_Enrollment</PropertyPath>
                                 <PropertyPath>_Exam</PropertyPath>
                                 <PropertyPath>_Professor</PropertyPath>
@@ -3335,6 +3563,314 @@
                         <PropertyPath>ExamType</PropertyPath>
                         <PropertyPath>ExamPresentation</PropertyPath>
                         <PropertyPath>ExamDate</PropertyPath>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__common.Messages" Path="SAP__Messages"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/HomeworkId">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__common.Label" String="UUID"/>
+                <Annotation Term="SAP__common.QuickInfo" String="16 Byte UUID in 16 Bytes (Raw Format)"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/OfferingId">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__common.Label" String="UUID"/>
+                <Annotation Term="SAP__common.QuickInfo" String="16 Byte UUID in 16 Bytes (Raw Format)"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/ProfessorId">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__common.Label" String="UUID"/>
+                <Annotation Term="SAP__common.QuickInfo" String="16 Byte UUID in 16 Bytes (Raw Format)"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/MimeType">
+                <Annotation Term="SAP__core.IsMediaType"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/Attachment">
+                <Annotation Term="SAP__core.ContentDisposition">
+                    <Record>
+                        <PropertyValue Property="Filename" Path="FileName"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__core.MediaType" Path="MimeType"/>
+                <Annotation Term="SAP__core.AcceptableMediaTypes">
+                    <Collection>
+                        <String>*/*</String>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/LocalLastChangedAt">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__common.Label" String="Changed On"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Local Instance Last Change Date Time"/>
+                <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=ABP_LOCINST_LASTCHANGE_TSTMPL"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/HasDraftEntity">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__UI.HiddenFilter"/>
+                <Annotation Term="SAP__UI.Hidden"/>
+                <Annotation Term="SAP__common.Label" String="Has Draft"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Draft - Indicator - Has draft document"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/DraftEntityCreationDateTime">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__UI.HiddenFilter"/>
+                <Annotation Term="SAP__UI.Hidden"/>
+                <Annotation Term="SAP__common.Label" String="Draft Created On"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/DraftEntityLastChangeDateTime">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__UI.HiddenFilter"/>
+                <Annotation Term="SAP__UI.Hidden"/>
+                <Annotation Term="SAP__common.Label" String="Draft Last Changed On"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/HasActiveEntity">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__UI.HiddenFilter"/>
+                <Annotation Term="SAP__UI.Hidden"/>
+                <Annotation Term="SAP__common.Label" String="Has active"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Draft - Indicator - Has active document"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/IsActiveEntity">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__UI.HiddenFilter"/>
+                <Annotation Term="SAP__UI.Hidden"/>
+                <Annotation Term="SAP__common.Label" String="Is active"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Draft - Indicator - Is active document"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/__EntityControl">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__UI.HiddenFilter"/>
+                <Annotation Term="SAP__UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="SAP__self.Container/Homework">
+                <Annotation Term="SAP__capabilities.NavigationRestrictions">
+                    <Record>
+                        <PropertyValue Property="RestrictedProperties">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="SiblingEntity"/>
+                                    <PropertyValue Property="DeepUpdateSupport">
+                                        <Record>
+                                            <PropertyValue Property="Supported" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_CourseOffering"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Insertable" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                    <PropertyValue Property="DeepUpdateSupport">
+                                        <Record>
+                                            <PropertyValue Property="Supported" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_Professor"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Insertable" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                    <PropertyValue Property="DeepUpdateSupport">
+                                        <Record>
+                                            <PropertyValue Property="Supported" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__common.DraftNode"/>
+                <Annotation Term="SAP__common.DraftActivationVia">
+                    <Collection>
+                        <String>SAP__self.Container/ProfDept</String>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.SearchRestrictions">
+                    <Record>
+                        <PropertyValue Property="Searchable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.FilterRestrictions">
+                    <Record>
+                        <PropertyValue Property="Filterable" Bool="true"/>
+                        <PropertyValue Property="FilterExpressionRestrictions">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="Description"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SearchExpression"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="Feedback"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SearchExpression"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="DraftEntityCreationDateTime"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="DraftEntityLastChangeDateTime"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="NonFilterableProperties">
+                            <Collection>
+                                <PropertyPath>__EntityControl</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.SortRestrictions">
+                    <Record>
+                        <PropertyValue Property="NonSortableProperties">
+                            <Collection>
+                                <PropertyPath>Description</PropertyPath>
+                                <PropertyPath>Feedback</PropertyPath>
+                                <PropertyPath>__EntityControl</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.UpdateRestrictions">
+                    <Record>
+                        <PropertyValue Property="DeltaUpdateSupported" Bool="true"/>
+                        <PropertyValue Property="Updatable" Path="__EntityControl/Updatable"/>
+                        <PropertyValue Property="NonUpdatableNavigationProperties">
+                            <Collection>
+                                <PropertyPath>DraftAdministrativeData</PropertyPath>
+                                <PropertyPath>SiblingEntity</PropertyPath>
+                                <PropertyPath>_CourseOffering</PropertyPath>
+                                <PropertyPath>_Professor</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="QueryOptions">
+                            <Record>
+                                <PropertyValue Property="SelectSupported" Bool="true"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.DeepUpdateSupport">
+                    <Record>
+                        <PropertyValue Property="ContentIDSupported" Bool="true"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.InsertRestrictions">
+                    <Record>
+                        <PropertyValue Property="Insertable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.DeleteRestrictions">
+                    <Record>
+                        <PropertyValue Property="Deletable" Path="__EntityControl/Deletable"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType">
+                <Annotation Term="SAP__common.Label" String="Projection View for Homework"/>
+                <Annotation Term="SAP__UI.DataPoint" Qualifier="DueDateKPI">
+                    <Record>
+                        <PropertyValue Property="Value" Path="DueDate"/>
+                        <PropertyValue Property="Title" String="Due Date"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.DataPoint" Qualifier="ScoreKPI">
+                    <Record>
+                        <PropertyValue Property="Value" Path="Score"/>
+                        <PropertyValue Property="Title" String="Score"/>
+                        <PropertyValue Property="Visualization" EnumMember="SAP__UI.VisualizationType/Number"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.HeaderFacets">
+                    <Collection>
+                        <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="HeaderScore"/>
+                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.DataPoint#ScoreKPI"/>
+                        </Record>
+                        <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="HeaderDueDate"/>
+                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.DataPoint#DueDateKPI"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__UI.Facets">
+                    <Collection>
+                        <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Student Submission"/>
+                            <PropertyValue Property="ID" String="SubmissionTab"/>
+                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.FieldGroup#SubmissionGroup"/>
+                        </Record>
+                        <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Evaluation &amp; Feedback"/>
+                            <PropertyValue Property="ID" String="GradingTab"/>
+                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.FieldGroup#GradingGroup"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__UI.FieldGroup" Qualifier="GradingGroup">
+                    <Record>
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="SAP__UI.DataField">
+                                    <PropertyValue Property="Label" String="Feedback"/>
+                                    <PropertyValue Property="Value" Path="Feedback"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.FieldGroup" Qualifier="SubmissionGroup">
+                    <Record>
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="SAP__UI.DataField">
+                                    <PropertyValue Property="Label" String="Attachment"/>
+                                    <PropertyValue Property="Value" Path="Attachment"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.HeaderInfo">
+                    <Record>
+                        <PropertyValue Property="TypeName" String="Homework"/>
+                        <PropertyValue Property="TypeNamePlural" String="Homeworks"/>
+                        <PropertyValue Property="Title">
+                            <Record Type="SAP__UI.DataField">
+                                <PropertyValue Property="Value" Path="Title"/>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="Description">
+                            <Record Type="SAP__UI.DataField">
+                                <PropertyValue Property="Value" Path="Description"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.LineItem">
+                    <Collection>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Label" String="Homework Title"/>
+                            <PropertyValue Property="Value" Path="Title"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Label" String="Due Date"/>
+                            <PropertyValue Property="Value" Path="DueDate"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Label" String="Submitted File"/>
+                            <PropertyValue Property="Value" Path="Attachment"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Label" String="Score"/>
+                            <PropertyValue Property="Value" Path="Score"/>
+                        </Record>
                     </Collection>
                 </Annotation>
                 <Annotation Term="SAP__common.Messages" Path="SAP__Messages"/>
@@ -3802,6 +4338,30 @@
                                     </PropertyValue>
                                 </Record>
                                 <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_AttendByDateCourse"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Insertable" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_AttendByDateLab"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Insertable" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_AttendByDateSeminary"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Insertable" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                                <Record>
                                     <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_Classroom"/>
                                     <PropertyValue Property="InsertRestrictions">
                                         <Record>
@@ -3840,6 +4400,14 @@
                                     <PropertyValue Property="InsertRestrictions">
                                         <Record>
                                             <PropertyValue Property="Insertable" Path="__CreateByAssociationControl/_Exam"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_Homework"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Insertable" Path="__CreateByAssociationControl/_Homework"/>
                                         </Record>
                                     </PropertyValue>
                                 </Record>
@@ -3924,10 +4492,14 @@
                             <Collection>
                                 <PropertyPath>DraftAdministrativeData</PropertyPath>
                                 <PropertyPath>SiblingEntity</PropertyPath>
+                                <PropertyPath>_AttendByDateCourse</PropertyPath>
+                                <PropertyPath>_AttendByDateLab</PropertyPath>
+                                <PropertyPath>_AttendByDateSeminary</PropertyPath>
                                 <PropertyPath>_Classroom</PropertyPath>
                                 <PropertyPath>_Course</PropertyPath>
                                 <PropertyPath>_Enrollment</PropertyPath>
                                 <PropertyPath>_Exam</PropertyPath>
+                                <PropertyPath>_Homework</PropertyPath>
                                 <PropertyPath>_Professor</PropertyPath>
                                 <PropertyPath>_Schedule</PropertyPath>
                             </Collection>
@@ -3959,6 +4531,9 @@
                 <Annotation Term="SAP__common.Composition"/>
             </Annotations>
             <Annotations Target="SAP__self.CourseOfferingType/_Exam">
+                <Annotation Term="SAP__common.Composition"/>
+            </Annotations>
+            <Annotations Target="SAP__self.CourseOfferingType/_Homework">
                 <Annotation Term="SAP__common.Composition"/>
             </Annotations>
             <Annotations Target="SAP__self.CourseOfferingType/_Schedule">
@@ -4045,36 +4620,46 @@
                 <Annotation Term="SAP__common.Label" String="Consumption View for ZI_CF_CRS_OFFR"/>
                 <Annotation Term="SAP__UI.Chart" Qualifier="RadialChartQualifier">
                     <Record Type="SAP__UI.ChartDefinitionType">
+                        <PropertyValue Property="Title" String="Student Pass Rate"/>
                         <PropertyValue Property="ChartType" EnumMember="SAP__UI.ChartType/Donut"/>
                         <PropertyValue Property="Measures">
                             <Collection>
-                                <PropertyPath>PassedStudents</PropertyPath>
+                                <PropertyPath>PassRate</PropertyPath>
                             </Collection>
                         </PropertyValue>
                         <PropertyValue Property="MeasureAttributes">
                             <Collection>
                                 <Record Type="SAP__UI.ChartMeasureAttributeType">
-                                    <PropertyValue Property="Measure" PropertyPath="PassedStudents"/>
+                                    <PropertyValue Property="Measure" PropertyPath="PassRate"/>
                                     <PropertyValue Property="Role" EnumMember="SAP__UI.ChartMeasureRoleType/Axis1"/>
-                                    <PropertyValue Property="DataPoint" AnnotationPath="@SAP__UI.DataPoint#PassedStudents"/>
+                                    <PropertyValue Property="DataPoint" AnnotationPath="@SAP__UI.DataPoint#PassRate"/>
                                 </Record>
                             </Collection>
                         </PropertyValue>
                     </Record>
                 </Annotation>
-                <Annotation Term="SAP__UI.DataPoint" Qualifier="PassedStudents">
+                <Annotation Term="SAP__UI.DataPoint" Qualifier="PassRate">
                     <Record>
-                        <PropertyValue Property="Value" Path="PassedStudents"/>
-                        <PropertyValue Property="Title" String="Current Pass Rate"/>
-                        <PropertyValue Property="TargetValue" Path="TotalStudents"/>
+                        <PropertyValue Property="Value" Path="PassRate"/>
+                        <PropertyValue Property="Title" String=""/>
+                        <PropertyValue Property="TargetValue" Decimal="100"/>
                         <PropertyValue Property="CriticalityCalculation">
                             <Record>
                                 <PropertyValue Property="ImprovementDirection" EnumMember="SAP__UI.ImprovementDirectionType/Maximize"/>
-                                <PropertyValue Property="DeviationRangeLowValue" Decimal="40"/>
-                                <PropertyValue Property="ToleranceRangeLowValue" Decimal="70"/>
+                                <PropertyValue Property="DeviationRangeLowValue" Decimal="80"/>
+                                <PropertyValue Property="ToleranceRangeLowValue" Decimal="90"/>
                             </Record>
                         </PropertyValue>
                     </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.HeaderFacets">
+                    <Collection>
+                        <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Student Pass Rate"/>
+                            <PropertyValue Property="ID" String="PassRateChart"/>
+                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.Chart#RadialChartQualifier"/>
+                        </Record>
+                    </Collection>
                 </Annotation>
                 <Annotation Term="SAP__UI.Facets">
                     <Collection>
@@ -4087,11 +4672,6 @@
                                         <PropertyValue Property="Label" String="Course Offering"/>
                                         <PropertyValue Property="ID" String="CourseOffering"/>
                                         <PropertyValue Property="Target" AnnotationPath="@SAP__UI.Identification"/>
-                                    </Record>
-                                    <Record Type="SAP__UI.ReferenceFacet">
-                                        <PropertyValue Property="Label" String="Student Pass Rate"/>
-                                        <PropertyValue Property="ID" String="Pass Rate Chart"/>
-                                        <PropertyValue Property="Target" AnnotationPath="@SAP__UI.Chart#RadialChartQualifier"/>
                                     </Record>
                                 </Collection>
                             </PropertyValue>
@@ -4110,6 +4690,21 @@
                             <PropertyValue Property="Label" String="Exams"/>
                             <PropertyValue Property="ID" String="CourseOfferingExams"/>
                             <PropertyValue Property="Target" AnnotationPath="_Exam/@SAP__UI.LineItem"/>
+                        </Record>
+                        <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Course Attendance"/>
+                            <PropertyValue Property="ID" String="CourseOfferingAttendanceCourse"/>
+                            <PropertyValue Property="Target" AnnotationPath="_AttendByDateCourse/@SAP__UI.LineItem"/>
+                        </Record>
+                        <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Seminary Attendance"/>
+                            <PropertyValue Property="ID" String="CourseOfferingAttendanceSeminary"/>
+                            <PropertyValue Property="Target" AnnotationPath="_AttendByDateSeminary/@SAP__UI.LineItem"/>
+                        </Record>
+                        <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Laboratory Attendance"/>
+                            <PropertyValue Property="ID" String="CourseOfferingAttendanceLab"/>
+                            <PropertyValue Property="Target" AnnotationPath="_AttendByDateLab/@SAP__UI.LineItem"/>
                         </Record>
                     </Collection>
                 </Annotation>
@@ -4213,6 +4808,11 @@
                             <PropertyValue Property="Label" String="Practice Type"/>
                             <PropertyValue Property="Value" Path="PracticeType"/>
                         </Record>
+                        <Record Type="SAP__UI.DataFieldForAnnotation">
+                            <PropertyValue Property="Label" String="Pass Rate"/>
+                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.Chart#RadialChartQualifier"/>
+                            <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/High"/>
+                        </Record>
                     </Collection>
                 </Annotation>
                 <Annotation Term="SAP__UI.SelectionFields">
@@ -4248,14 +4848,12 @@
             <Annotations Target="SAP__self.StudentType/CreatedBy">
                 <Annotation Term="SAP__core.Computed"/>
                 <Annotation Term="SAP__common.IsUpperCase"/>
-                <Annotation Term="SAP__UI.Hidden"/>
                 <Annotation Term="SAP__common.Label" String="Created By"/>
                 <Annotation Term="SAP__common.QuickInfo" String="Created By User"/>
                 <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=ABP_CREATION_USER"/>
             </Annotations>
             <Annotations Target="SAP__self.StudentType/CreatedAt">
                 <Annotation Term="SAP__core.Computed"/>
-                <Annotation Term="SAP__UI.Hidden"/>
                 <Annotation Term="SAP__common.Label" String="Created On"/>
                 <Annotation Term="SAP__common.QuickInfo" String="Creation Date Time"/>
                 <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=ABP_CREATION_TSTMPL"/>
@@ -4263,24 +4861,38 @@
             <Annotations Target="SAP__self.StudentType/LastChangedBy">
                 <Annotation Term="SAP__core.Computed"/>
                 <Annotation Term="SAP__common.IsUpperCase"/>
-                <Annotation Term="SAP__UI.Hidden"/>
                 <Annotation Term="SAP__common.Label" String="Changed By"/>
                 <Annotation Term="SAP__common.QuickInfo" String="Last Changed By User"/>
                 <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=ABP_LASTCHANGE_USER"/>
             </Annotations>
             <Annotations Target="SAP__self.StudentType/LastChangedAt">
                 <Annotation Term="SAP__core.Computed"/>
-                <Annotation Term="SAP__UI.Hidden"/>
                 <Annotation Term="SAP__common.Label" String="Changed On"/>
                 <Annotation Term="SAP__common.QuickInfo" String="Last Change Date Time"/>
                 <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=ABP_LASTCHANGE_TSTMPL"/>
             </Annotations>
             <Annotations Target="SAP__self.StudentType/LocalLastChangedAt">
                 <Annotation Term="SAP__core.Computed"/>
-                <Annotation Term="SAP__UI.Hidden"/>
                 <Annotation Term="SAP__common.Label" String="Changed On"/>
                 <Annotation Term="SAP__common.QuickInfo" String="Local Instance Last Change Date Time"/>
                 <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=ABP_LOCINST_LASTCHANGE_TSTMPL"/>
+            </Annotations>
+            <Annotations Target="SAP__self.StudentType/MimeType">
+                <Annotation Term="SAP__core.IsMediaType"/>
+                <Annotation Term="SAP__UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="SAP__self.StudentType/Photo">
+                <Annotation Term="SAP__core.ContentDisposition">
+                    <Record>
+                        <PropertyValue Property="Filename" Path="FileName"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__core.MediaType" Path="MimeType"/>
+                <Annotation Term="SAP__core.AcceptableMediaTypes">
+                    <Collection>
+                        <String>image/*</String>
+                    </Collection>
+                </Annotation>
             </Annotations>
             <Annotations Target="SAP__self.StudentType/HideNewEnroll">
                 <Annotation Term="SAP__common.Label" String="Hide New Enroll"/>
@@ -4517,6 +5129,7 @@
                                 <PropertyValue Property="Value" Path="StudentNumber"/>
                             </Record>
                         </PropertyValue>
+                        <PropertyValue Property="ImageUrl" Path="Photo"/>
                     </Record>
                 </Annotation>
                 <Annotation Term="SAP__UI.Identification">
@@ -4538,28 +5151,12 @@
                             <PropertyValue Property="Value" Path="Email"/>
                         </Record>
                         <Record Type="SAP__UI.DataField">
-                            <PropertyValue Property="Label" String="Created By"/>
-                            <PropertyValue Property="Value" Path="CreatedBy"/>
-                        </Record>
-                        <Record Type="SAP__UI.DataField">
                             <PropertyValue Property="Label" String="Year"/>
                             <PropertyValue Property="Value" Path="StudentYear"/>
                         </Record>
                         <Record Type="SAP__UI.DataField">
-                            <PropertyValue Property="Label" String="Created At"/>
-                            <PropertyValue Property="Value" Path="CreatedAt"/>
-                        </Record>
-                        <Record Type="SAP__UI.DataField">
-                            <PropertyValue Property="Label" String="Last Changed By"/>
-                            <PropertyValue Property="Value" Path="LastChangedBy"/>
-                        </Record>
-                        <Record Type="SAP__UI.DataField">
-                            <PropertyValue Property="Label" String="Last Changed At"/>
-                            <PropertyValue Property="Value" Path="LastChangedAt"/>
-                        </Record>
-                        <Record Type="SAP__UI.DataField">
-                            <PropertyValue Property="Label" String="Local Last Changed At"/>
-                            <PropertyValue Property="Value" Path="LocalLastChangedAt"/>
+                            <PropertyValue Property="Label" String="Photo"/>
+                            <PropertyValue Property="Value" Path="Photo"/>
                         </Record>
                         <Record Type="SAP__UI.DataFieldForAction">
                             <PropertyValue Property="Label" String="Enroll"/>
@@ -4858,12 +5455,39 @@
             </Annotations>
             <Annotations Target="SAP__self.setAbsent(SAP__self.LabAttendanceType)">
                 <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/setAbsent"/>
+                <Annotation Term="SAP__common.SideEffects" Qualifier="SAP__Action_setAbsent">
+                    <Record Type="SAP__common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath/>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
             </Annotations>
             <Annotations Target="SAP__self.setNeutral(SAP__self.LabAttendanceType)">
                 <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/setNeutral"/>
+                <Annotation Term="SAP__common.SideEffects" Qualifier="SAP__Action_setNeutral">
+                    <Record Type="SAP__common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath/>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
             </Annotations>
             <Annotations Target="SAP__self.setPresent(SAP__self.LabAttendanceType)">
                 <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/setPresent"/>
+                <Annotation Term="SAP__common.SideEffects" Qualifier="SAP__Action_setPresent">
+                    <Record Type="SAP__common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath/>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
             </Annotations>
             <Annotations Target="SAP__self.LabAttendanceType">
                 <Annotation Term="SAP__common.Label" String="Consumption View for ZI_CF_ATTEND_LAB"/>
@@ -5547,16 +6171,22 @@
                 <Annotation Term="SAP__common.QuickInfo" String="Local Instance Last Change Date Time"/>
                 <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=ABP_LOCINST_LASTCHANGE_TSTMPL"/>
             </Annotations>
-            <Annotations Target="SAP__self.ProfessorType/ProfilePic">
+            <Annotations Target="SAP__self.ProfessorType/MimeType">
+                <Annotation Term="SAP__core.IsMediaType"/>
+                <Annotation Term="SAP__UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="SAP__self.ProfessorType/Photo">
                 <Annotation Term="SAP__core.ContentDisposition">
                     <Record>
                         <PropertyValue Property="Filename" Path="FileName"/>
                     </Record>
                 </Annotation>
                 <Annotation Term="SAP__core.MediaType" Path="MimeType"/>
-            </Annotations>
-            <Annotations Target="SAP__self.ProfessorType/MimeType">
-                <Annotation Term="SAP__core.IsMediaType"/>
+                <Annotation Term="SAP__core.AcceptableMediaTypes">
+                    <Collection>
+                        <String>image/*</String>
+                    </Collection>
+                </Annotation>
             </Annotations>
             <Annotations Target="SAP__self.ProfessorType/HideNewCrsOffr">
                 <Annotation Term="SAP__common.Label" String="Hide New Course Offering"/>
@@ -5861,7 +6491,7 @@
                                 <PropertyValue Property="Value" Path="FullName"/>
                             </Record>
                         </PropertyValue>
-                        <PropertyValue Property="ImageUrl" Path="ProfilePic"/>
+                        <PropertyValue Property="ImageUrl" Path="Photo"/>
                     </Record>
                 </Annotation>
                 <Annotation Term="SAP__UI.Identification">
@@ -5881,6 +6511,10 @@
                         <Record Type="SAP__UI.DataField">
                             <PropertyValue Property="Label" String="Last Name"/>
                             <PropertyValue Property="Value" Path="LastName"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Label" String="Photo"/>
+                            <PropertyValue Property="Value" Path="Photo"/>
                         </Record>
                         <Record Type="SAP__UI.DataFieldForAction">
                             <PropertyValue Property="Label" String="Create Course Offering"/>
@@ -5936,6 +6570,78 @@
                 <Annotation Term="SAP__common.Label" String="Value Help for Attendance Status"/>
             </Annotations>
             <Annotations Target="SAP__self.Container/StatusVH">
+                <Annotation Term="SAP__capabilities.SearchRestrictions">
+                    <Record>
+                        <PropertyValue Property="Searchable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.InsertRestrictions">
+                    <Record>
+                        <PropertyValue Property="Insertable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.DeleteRestrictions">
+                    <Record>
+                        <PropertyValue Property="Deletable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.UpdateRestrictions">
+                    <Record>
+                        <PropertyValue Property="Updatable" Bool="false"/>
+                        <PropertyValue Property="QueryOptions">
+                            <Record>
+                                <PropertyValue Property="SelectSupported" Bool="true"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.AttendByDateType">
+                <Annotation Term="SAP__common.Label" String="Attend By Date"/>
+                <Annotation Term="SAP__UI.Chart" Qualifier="AttendanceChart">
+                    <Record Type="SAP__UI.ChartDefinitionType">
+                        <PropertyValue Property="Title" String="Attendance"/>
+                        <PropertyValue Property="ChartType" EnumMember="SAP__UI.ChartType/Donut"/>
+                        <PropertyValue Property="Measures">
+                            <Collection>
+                                <PropertyPath>TotalPresent</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="MeasureAttributes">
+                            <Collection>
+                                <Record Type="SAP__UI.ChartMeasureAttributeType">
+                                    <PropertyValue Property="Measure" PropertyPath="TotalPresent"/>
+                                    <PropertyValue Property="Role" EnumMember="SAP__UI.ChartMeasureRoleType/Axis1"/>
+                                    <PropertyValue Property="DataPoint" AnnotationPath="@SAP__UI.DataPoint#TotalPresent"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.DataPoint" Qualifier="TotalPresent">
+                    <Record>
+                        <PropertyValue Property="Value" Path="TotalPresent"/>
+                        <PropertyValue Property="Title" String=""/>
+                        <PropertyValue Property="TargetValue" Path="TotalStudents"/>
+                        <PropertyValue Property="MinimumValue" Decimal="0"/>
+                        <PropertyValue Property="MaximumValue" Decimal="0"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.LineItem">
+                    <Collection>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Label" String="Class Date"/>
+                            <PropertyValue Property="Value" Path="ClassDate"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataFieldForAnnotation">
+                            <PropertyValue Property="Label" String="Attendance"/>
+                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.Chart#AttendanceChart"/>
+                            <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/High"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.Container/AttendByDate">
                 <Annotation Term="SAP__capabilities.SearchRestrictions">
                     <Record>
                         <PropertyValue Property="Searchable" Bool="false"/>
@@ -6212,9 +6918,11 @@
                 <Annotation Term="SAP__UI.Identification">
                     <Collection>
                         <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Label" String="Department Name"/>
                             <PropertyValue Property="Value" Path="DepartmentName"/>
                         </Record>
                         <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Label" String="Description"/>
                             <PropertyValue Property="Value" Path="Description"/>
                         </Record>
                     </Collection>
@@ -6222,9 +6930,11 @@
                 <Annotation Term="SAP__UI.LineItem">
                     <Collection>
                         <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Label" String="Department Name"/>
                             <PropertyValue Property="Value" Path="DepartmentName"/>
                         </Record>
                         <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Label" String="Description"/>
                             <PropertyValue Property="Value" Path="Description"/>
                         </Record>
                     </Collection>
@@ -6232,6 +6942,7 @@
                 <Annotation Term="SAP__UI.SelectionFields">
                     <Collection>
                         <PropertyPath>DepartmentName</PropertyPath>
+                        <PropertyPath>Description</PropertyPath>
                     </Collection>
                 </Annotation>
                 <Annotation Term="SAP__common.Messages" Path="SAP__Messages"/>
@@ -6345,12 +7056,32 @@
             <Annotations Target="SAP__self.CourseOfferingType/TotalStudents">
                 <Annotation Term="SAP__UI.Hidden"/>
             </Annotations>
+            <Annotations Target="SAP__self.CourseOfferingType/PassedStudents">
+                <Annotation Term="SAP__UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="SAP__self.ExamType/TotalStudents">
+                <Annotation Term="SAP__UI.Hidden"/>
+            </Annotations>
             <Annotations Target="SAP__self.GradeType/ScoreCriticality">
                 <Annotation Term="SAP__UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/StudentId">
+                <Annotation Term="SAP__UI.Hidden"/>
+                <Annotation Term="SAP__common.Label" String="UUID"/>
+                <Annotation Term="SAP__common.QuickInfo" String="16 Byte UUID in 16 Bytes (Raw Format)"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/Description">
+                <Annotation Term="SAP__UI.MultiLineText"/>
+            </Annotations>
+            <Annotations Target="SAP__self.HomeworkType/Feedback">
+                <Annotation Term="SAP__UI.MultiLineText"/>
             </Annotations>
             <Annotations Target="SAP__self.ProfessorType/Email">
                 <Annotation Term="SAP__communication.IsEmailAddress"/>
                 <Annotation Term="SAP__common.Label" String="Email"/>
+            </Annotations>
+            <Annotations Target="SAP__self.ProfessorType/FileName">
+                <Annotation Term="SAP__UI.Hidden"/>
             </Annotations>
             <Annotations Target="SAP__self.ProfDeptType/ProfessorId">
                 <Annotation Term="SAP__UI.Hidden"/>
@@ -6365,6 +7096,14 @@
             <Annotations Target="SAP__self.StudentType/Email">
                 <Annotation Term="SAP__communication.IsEmailAddress"/>
                 <Annotation Term="SAP__common.Label" String="Email"/>
+            </Annotations>
+            <Annotations Target="SAP__self.StudentType/FileName">
+                <Annotation Term="SAP__UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="SAP__self.AttendByDateType/OfferingId">
+                <Annotation Term="SAP__UI.Hidden"/>
+                <Annotation Term="SAP__common.Label" String="UUID"/>
+                <Annotation Term="SAP__common.QuickInfo" String="16 Byte UUID in 16 Bytes (Raw Format)"/>
             </Annotations>
             <Annotations Target="SAP__self.TypeAttendaceType/domain_name">
                 <Annotation Term="SAP__UI.Hidden"/>
@@ -6490,6 +7229,10 @@
                 <Annotation Term="SAP__common.Heading" String="Attendance Type"/>
                 <Annotation Term="SAP__common.QuickInfo" String="Attendance Type"/>
             </Annotations>
+            <Annotations Target="SAP__self.AttendanceType/OfferingId">
+                <Annotation Term="SAP__common.Label" String="UUID"/>
+                <Annotation Term="SAP__common.QuickInfo" String="16 Byte UUID in 16 Bytes (Raw Format)"/>
+            </Annotations>
             <Annotations Target="SAP__self.ClasroomType/RooomNumber">
                 <Annotation Term="SAP__common.Label" String="Room Number"/>
                 <Annotation Term="SAP__common.QuickInfo" String="Room number"/>
@@ -6509,6 +7252,11 @@
             <Annotations Target="SAP__self.ProfessorType/DepartmentId">
                 <Annotation Term="SAP__common.Label" String="UUID"/>
                 <Annotation Term="SAP__common.QuickInfo" String="16 Byte UUID in 16 Bytes (Raw Format)"/>
+            </Annotations>
+            <Annotations Target="SAP__self.AttendByDateType/Type">
+                <Annotation Term="SAP__common.Label" String="Attend Type"/>
+                <Annotation Term="SAP__common.Heading" String="Attendance Type"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Attendance Type"/>
             </Annotations>
             <Annotations Target="SAP__self.DepartmentType/DepartmentName">
                 <Annotation Term="SAP__common.Label" String="Department Name"/>
@@ -6534,6 +7282,11 @@
                 <Annotation Term="SAP__common.QuickInfo" String="Dynamic Create via Association Control Property"/>
             </Annotations>
             <Annotations Target="SAP__self.CourseOfferingCbAControl/_Exam">
+                <Annotation Term="SAP__common.Label" String="Dynamic CbA-Control"/>
+                <Annotation Term="SAP__common.Heading" String="Dynamic Create by Association Control"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Dynamic Create via Association Control Property"/>
+            </Annotations>
+            <Annotations Target="SAP__self.CourseOfferingCbAControl/_Homework">
                 <Annotation Term="SAP__common.Label" String="Dynamic CbA-Control"/>
                 <Annotation Term="SAP__common.Heading" String="Dynamic Create by Association Control"/>
                 <Annotation Term="SAP__common.QuickInfo" String="Dynamic Create via Association Control Property"/>
