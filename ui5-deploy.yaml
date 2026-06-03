@@ -24,4 +24,5 @@ builder:
           transport: ''
         exclude:
           - /test/
+          - /localService/mainService/srvd_f4/
 
